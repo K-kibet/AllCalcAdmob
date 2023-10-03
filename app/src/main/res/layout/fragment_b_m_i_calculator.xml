@@ -34,7 +34,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_toStartOf="@id/centerverticalline"
-        android:background="@drawable/cardbackgroung"
+        android:background="@drawable/cardbackground"
         android:layout_above="@id/heightlayout"
         android:layout_marginBottom="35dp"
         android:layout_marginRight="20dp"
@@ -77,7 +77,7 @@
         android:layout_marginBottom="35dp"
         android:layout_marginRight="20dp"
         android:layout_toEndOf="@id/centerverticalline"
-        android:background="@drawable/cardbackgroung"
+        android:background="@drawable/cardbackground"
         android:layout_marginLeft="20dp"
         android:id="@+id/female">
 
@@ -116,7 +116,7 @@
         android:layout_above="@id/centerhorizontalline"
         android:layout_marginBottom="-50dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/cardbackgroung"
+        android:background="@drawable/cardbackground"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:id="@+id/heightlayout">
@@ -174,13 +174,13 @@
 
     </RelativeLayout>
 
-    <android.widget.Button
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/calculatebmi"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/buttonbackground"
+        android:background="@drawable/background_edittext"
         android:text="@string/calculate_your_bmi"
         android:textSize="15sp"
         android:textColor="@color/white"
@@ -188,7 +188,7 @@
         android:layout_marginHorizontal="20dp"
         >
 
-    </android.widget.Button>
+    </Button>
 
 
 
@@ -196,13 +196,13 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_toStartOf="@id/centerverticalline"
-        android:background="@drawable/cardbackgroung"
+        android:background="@drawable/cardbackground"
         android:layout_below="@id/heightlayout"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="85dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:id="@+id/weight">
+        >
 
 
 
@@ -212,7 +212,6 @@
             android:textSize="18sp"
             android:textColor="@color/white"
             android:text="@string/weight"
-            android:id="@+id/textweight"
             android:layout_marginTop="15dp"
             android:textAlignment="center"
             android:textStyle="bold"
@@ -282,19 +281,18 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_toEndOf="@id/centerverticalline"
-        android:background="@drawable/cardbackgroung"
+        android:background="@drawable/cardbackground"
         android:layout_below="@id/heightlayout"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="85dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:id="@+id/Age">
+        >
 
 
 
         <TextView
 
-            android:id="@+id/textage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"

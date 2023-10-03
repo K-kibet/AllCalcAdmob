@@ -23,29 +23,14 @@ import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 
 public class BMICalculatorFragment extends Fragment {
-    TextView mcurrentheight;
-    TextView mcurrentweight,mcurrentage;
+    TextView mcurrentheight,mcurrentweight,mcurrentage, mbmidisplay, mbmicategory, mgender;
     ImageView mincrementage,mdecrementage,mincrementweight,mdecrementweight;
     SeekBar mseekbarforheight;
-    Button mcalculatebmi;
-    RelativeLayout mmale,mfemale;
-
-    int intweight=55;
-    int intage=22;
-    int currentprogress;
-    String mintprogress="170";
-    String typerofuser="0";
-    String weight2="55";
-    String age2="22";
-
-
-    TextView mbmidisplay;
-    TextView mbmicategory;
-    TextView mgender;
-    Button mgotomain;
+    Button mcalculatebmi, mgotomain;
+    RelativeLayout mmale,mfemale, mbackground;
+    int intweight=55, intage=22,currentprogress;
+    String mintprogress="170", typerofuser="0", weight2="55", age2="22";
     float intbmi, intheight, height;
-
-    RelativeLayout mbackground;
 
     private MaxInterstitialAd mediationInterstitialAd;
 

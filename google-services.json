@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "940820868007",
+    "project_id": "all-calculator-1",
+    "storage_bucket": "all-calculator-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940820868007:android:2cb96bb55332d5ff0ee482",
+        "android_client_info": {
+          "package_name": "com.codespear.allcalc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwh6X6mycz1HtwzpSucAvZ-SC_nN155IQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
