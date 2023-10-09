@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">AllCalc</string>
+    <string name="app_name">All Calculator</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!--Applovin -->
-    <string name="sdk_key">8HpScxVFl32FFOVH9GKurkQfJF5ius9J2EvB7cbqrvwI6M08nEKOPfmRTVd9z4gJ57Zeq0rCeJATTcU_daAfve</string>
-    <string name="Interstitial_Ad_Unit">c86c7051d614fcd6</string>
-    <string name="Banner_Ad_Unit">122e4614fa465dd3</string>
+    <!--Admob-->
+    <string name="admob_app_id">ca-app-pub-2583214494360788~2424639048</string>
+    <string name="admob_interstitial_ad_unit">ca-app-pub-2583214494360788/3354577332/0</string>
+    <string name="admob_banner_ad_unit">ca-app-pub-2583214494360788/9919985680/0</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="basic_calculator">Basic Calculator</string>

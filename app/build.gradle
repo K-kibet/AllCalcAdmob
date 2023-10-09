@@ -39,8 +39,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'com.faendir.rhino:rhino-android:1.5.2'
-    implementation 'com.applovin:applovin-sdk:11.10.1'
-    implementation 'com.applovin.mediation:facebook-adapter:6.14.0.0'
-    implementation 'com.facebook.android:audience-network-sdk:6.14.0'
+    implementation 'com.google.android.gms:play-services-ads:22.4.0'
     implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
 }

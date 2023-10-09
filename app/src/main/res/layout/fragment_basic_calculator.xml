@@ -33,17 +33,16 @@
         android:layout_marginRight="8dp"
         android:background="@color/white"
         android:gravity="bottom">
-        <com.applovin.mediation.ads.MaxAdView
-            android:id="@+id/adView"
-            xmlns:maxads="http://schemas.applovin.com/android/1.0"
-            maxads:adUnitId="@string/Banner_Ad_Unit"
+
+        <FrameLayout
+            android:id="@+id/adViewContainer"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"/>
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/adView"
+            android:layout_below="@id/adViewContainer"
             layout="@layout/buttons_layout"/>
     </RelativeLayout>
 </LinearLayout>

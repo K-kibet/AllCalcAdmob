@@ -15,19 +15,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.google.android.material.navigation.NavigationView;
 import com.onesignal.OneSignal;
-
 import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     private Toolbar toolbar;
-    private Integer ads;
-    private MaxInterstitialAd mediationInterstitialAd;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -38,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // OneSignal Initialization
         OneSignal.initWithContext(this);
         OneSignal.setAppId(getString(R.string.ONESIGNAL_APP_ID));
-
-        ads = 3;
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.layout_container, new BasicCalculatorFragment()).commit();
             navigationView.setCheckedItem(R.id.basic_calculator);
         }
-
-        createMediationInterstitialAd();
 
     }
 
@@ -96,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 rate();
                 return false;
         }
-        showMediationInterstitialAd();
-        if(ads > 0) mediationInterstitialAd.loadAd();
         assert fragment != null;
         getSupportFragmentManager().beginTransaction().replace(R.id.layout_container, fragment).commit();
         drawer.closeDrawer(GravityCompat.START);
@@ -125,42 +114,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(rateIntent);
         }
     }
+
     private Intent rateIntentForUrl(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, getPackageName())));
         int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
         flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
         intent.addFlags(flags);
         return intent;
-    }
-
-    private void createMediationInterstitialAd() {
-        mediationInterstitialAd = new MaxInterstitialAd(getResources().getString(R.string.Interstitial_Ad_Unit), this);
-        mediationInterstitialAd.loadAd();
-        mediationInterstitialAd.setListener(new MaxAdListener() {
-            @Override
-            public void onAdLoaded(MaxAd ad) {}
-            @Override
-            public void onAdDisplayed(MaxAd ad) {}
-            @Override
-            public void onAdHidden(MaxAd ad) {
-                if(ads > 0) {
-                    ads--;
-                }
-            }
-
-            @Override
-            public void onAdClicked(MaxAd ad) {}
-
-            @Override
-            public void onAdLoadFailed(String s, MaxError maxError) {}
-
-            @Override
-            public void onAdDisplayFailed(MaxAd maxAd, MaxError maxError) {}
-        });
-    }
-    private void showMediationInterstitialAd() {
-        if (mediationInterstitialAd.isReady()) {
-            mediationInterstitialAd.showAd();
-        }
     }
 }

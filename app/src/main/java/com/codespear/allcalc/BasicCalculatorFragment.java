@@ -1,22 +1,27 @@
 package com.codespear.allcalc;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.applovin.mediation.ads.MaxAdView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.button.MaterialButton;
 
 import java.text.DecimalFormat;
 
 public class BasicCalculatorFragment extends Fragment {
+    private FrameLayout adViewContainer;
     private static final char ADDITION = '+';
     private static final char SUBTRACTION = '-';
     private static final char MULTIPLICATION = '*';
@@ -123,10 +128,8 @@ public class BasicCalculatorFragment extends Fragment {
             firstValue = Double.NaN;
             currentSymbol = '0';
         });
-
-        MaxAdView adView = view.findViewById(R.id.adView);
-        adView.loadAd();
-        adView.startAutoRefresh();
+        adViewContainer = view.findViewById(R.id.adViewContainer);
+        adViewContainer.post(this::LoadBanner);
     }
     private void allCalculations(){
         if (!Double.isNaN(firstValue)) {
@@ -148,5 +151,31 @@ public class BasicCalculatorFragment extends Fragment {
             } catch (Exception e) {
             }
         }
+    }
+
+    private void LoadBanner() {
+        AdView adView = new AdView(requireContext());
+        adView.setAdUnitId(getString(R.string.admob_banner_ad_unit));
+        adViewContainer.removeAllViews();
+        adViewContainer.addView(adView);
+
+        AdSize adSize = getAdSize();
+        adView.setAdSize(adSize);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        adView.loadAd(adRequest);
+    }
+
+    private AdSize getAdSize() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+        int adWidth = (int) (widthPixels / density);
+
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth);
     }
 }

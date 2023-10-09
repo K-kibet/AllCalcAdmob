@@ -2,11 +2,14 @@ package com.codespear.allcalc;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,8 +19,13 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.applovin.mediation.ads.MaxAdView;
-import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class BMRCalculatorFragment extends Fragment {
     Button btnCalculate, btnRecalculate;
@@ -25,7 +33,8 @@ public class BMRCalculatorFragment extends Fragment {
     RelativeLayout maleLayout, femaleLayout;
     double h =0, w =0, a = 0, bmr = 0;
     String user = "0";
-    private MaxInterstitialAd mediationInterstitialAd;
+    private InterstitialAd mInterstitialAd;
+    private FrameLayout adViewContainer;
     TextView bmrResults, mgender;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,10 +54,20 @@ public class BMRCalculatorFragment extends Fragment {
 
         maleLayout = view.findViewById(R.id.maleLayout);
         femaleLayout = view.findViewById(R.id.femaleLayout);
+        AdRequest adRequest = new AdRequest.Builder().build();
 
-        mediationInterstitialAd = new MaxInterstitialAd(getResources().getString(R.string.Interstitial_Ad_Unit), requireActivity());
-        mediationInterstitialAd.loadAd();
+        InterstitialAd.load(requireContext(),getString(R.string.admob_interstitial_ad_unit), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                    }
 
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                    }
+                });
 
         maleLayout.setOnClickListener(v -> {
             maleLayout.setBackground(ContextCompat.getDrawable(requireContext(),R.drawable.malefemalefocus));
@@ -64,10 +83,8 @@ public class BMRCalculatorFragment extends Fragment {
 
 
         btnCalculate.setOnClickListener(v -> calculate());
-
-        MaxAdView adView = view.findViewById(R.id.adView);
-        adView.loadAd();
-        adView.startAutoRefresh();
+        adViewContainer = view.findViewById(R.id.adViewContainer);
+        adViewContainer.post(this::LoadBanner);
     }
 
     //calculate function
@@ -101,18 +118,61 @@ public class BMRCalculatorFragment extends Fragment {
             mgender.setText(user);
             bmrResults.setText(Double.toString(bmr));
             btnRecalculate.setOnClickListener(v1 -> {
-                dialog.cancel();
-                showMediationInterstitialAd();
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(requireActivity());
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent();
+                            mInterstitialAd = null;
+                            dialog.cancel();
+                        }
+                    });
+                } else {
+                    dialog.cancel();
+                }
             });
-            dialog.show();
-            showMediationInterstitialAd();
+
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+                        mInterstitialAd = null;
+                        dialog.show();
+                    }
+                });
+            } else {
+                dialog.show();
+            }
         }
 
     }
 
-    private void showMediationInterstitialAd() {
-        if (mediationInterstitialAd.isReady()) {
-            mediationInterstitialAd.showAd();
-        }
+    private void LoadBanner() {
+        AdView adView = new AdView(requireContext());
+        adView.setAdUnitId(getString(R.string.admob_banner_ad_unit));
+        adViewContainer.removeAllViews();
+        adViewContainer.addView(adView);
+
+        AdSize adSize = getAdSize();
+        adView.setAdSize(adSize);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        adView.loadAd(adRequest);
+    }
+
+    private AdSize getAdSize() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+        int adWidth = (int) (widthPixels / density);
+
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth);
     }
 }

@@ -1,26 +1,30 @@
 package com.codespear.allcalc;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.ads.MaxAdView;
-import com.applovin.mediation.ads.MaxInterstitialAd;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class TipCalculatorFragment extends Fragment {
 
@@ -29,7 +33,8 @@ public class TipCalculatorFragment extends Fragment {
     SeekBar sbPercent;
     TextView tvTip, tvTotal;
     Button btnCalculate;
-    private MaxInterstitialAd mediationInterstitialAd;
+    private InterstitialAd mInterstitialAd;
+    private FrameLayout adViewContainer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,8 +52,21 @@ public class TipCalculatorFragment extends Fragment {
         tvTotal = view.findViewById(R.id.tv_total);
         btnCalculate = view.findViewById(R.id.btn_calculate);
 
-        mediationInterstitialAd = new MaxInterstitialAd(getResources().getString(R.string.Interstitial_Ad_Unit), requireActivity());
-        mediationInterstitialAd.loadAd();
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(requireContext(),getString(R.string.admob_interstitial_ad_unit), adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+                    }
+                });
 
         sbPercent.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -88,13 +106,23 @@ public class TipCalculatorFragment extends Fragment {
         });
 
         btnCalculate.setOnClickListener(v -> {
-            calculate();
-            showMediationInterstitialAd();
+            if (mInterstitialAd != null) {
+                mInterstitialAd.show(requireActivity());
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+                        mInterstitialAd = null;
+                        calculate();
+                    }
+                });
+            } else {
+                calculate();
+            }
         });
 
-        MaxAdView adView = view.findViewById(R.id.adView);
-        adView.loadAd();
-        adView.startAutoRefresh();
+        adViewContainer = view.findViewById(R.id.adViewContainer);
+        adViewContainer.post(this::LoadBanner);
     }
 
     private void calculate() {
@@ -111,9 +139,29 @@ public class TipCalculatorFragment extends Fragment {
             tvTotal.setText(String.valueOf(total));
         }
     }
-    private void showMediationInterstitialAd() {
-        if (mediationInterstitialAd.isReady()) {
-            mediationInterstitialAd.showAd();
-        }
+    private void LoadBanner() {
+        AdView adView = new AdView(requireContext());
+        adView.setAdUnitId(getString(R.string.admob_banner_ad_unit));
+        adViewContainer.removeAllViews();
+        adViewContainer.addView(adView);
+
+        AdSize adSize = getAdSize();
+        adView.setAdSize(adSize);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        adView.loadAd(adRequest);
+    }
+
+    private AdSize getAdSize() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+        int adWidth = (int) (widthPixels / density);
+
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(requireContext(), adWidth);
     }
 }
